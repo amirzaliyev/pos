@@ -3,6 +3,8 @@ migrations/
 __pycache__/
 
 .env
+.pg_service.conf
+.pos_pgpass
 test.py
 pyrightconfig.json
-
+eslint.config.js
