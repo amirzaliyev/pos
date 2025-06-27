@@ -19,12 +19,12 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 #: users/models.py:73
 msgid "User's phone number"
-msgstr ""
+msgstr "Foydalanuvchining telefon raqami"
 
 #: users/models.py:84
 msgid "user"
-msgstr ""
+msgstr "foydalanuvchi"
 
 #: users/models.py:85
 msgid "users"
-msgstr ""
+msgstr "foydalanuvchilar"

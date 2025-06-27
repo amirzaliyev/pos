@@ -21,12 +21,12 @@ msgstr ""
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 #: users/models.py:73
 msgid "User's phone number"
-msgstr ""
+msgstr "Номер телефона пользователя"
 
 #: users/models.py:84
 msgid "user"
-msgstr ""
+msgstr "пользователь"
 
 #: users/models.py:85
 msgid "users"
-msgstr ""
+msgstr "пользователи"

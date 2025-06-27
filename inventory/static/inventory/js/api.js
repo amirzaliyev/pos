@@ -1,7 +1,7 @@
 // API Service for POS System
 class APIService {
   constructor() {
-    this.baseURL = "http://localhost:3000/api"; // Change this to your backend URL
+    this.baseURL = "http://localhost:8000/api"; // Change this to your backend URL
     this.defaultHeaders = {
       "Content-Type": "application/json",
     };

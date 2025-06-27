@@ -16,16 +16,27 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: inventory/models.py:24
+msgid "The unit measurement for the product (e.g., kg)"
+msgstr ""
 
-#: pos/settings.py:126
-msgid "Uzbek"
-msgstr "O'zbek"
+#: inventory/models.py:30
+msgid "Detailed description of the product (optional)."
+msgstr ""
 
-#: pos/settings.py:127
-msgid "English"
-msgstr "Ingliz"
+#: inventory/models.py:45
+msgid "In"
+msgstr ""
 
-#: pos/settings.py:128
-msgid "Russian"
-msgstr "Rus tili"
+#: inventory/models.py:46
+msgid "Out"
+msgstr ""
+
+#: inventory/models.py:54
+msgid "Identifies whether product has been added or withdrawed"
+msgstr ""
+
+#: inventory/models.py:60
+msgid "Simple explanation for stock movement."
+msgstr ""

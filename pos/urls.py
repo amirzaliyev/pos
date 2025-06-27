@@ -15,19 +15,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.conf.urls.i18n import i18n_patterns
-from django.contrib import admin
-from django.conf.urls.static import static
 from django.conf import settings
+from django.conf.urls.i18n import i18n_patterns
+from django.conf.urls.static import static
+from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
     path("i18n/", include("django.conf.urls.i18n")),
 ]
 
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += i18n_patterns(
-    path("admin/", admin.site.urls), path("", include("products.urls"))
+    path("admin/", admin.site.urls),
+    path("inventory/", include("inventory.urls")),
 )
-
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
