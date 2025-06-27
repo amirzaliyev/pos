@@ -1,7 +1,7 @@
 // API Service for POS System
 class APIService {
   constructor() {
-    this.baseURL = "http://localhost:8000/api"; // Change this to your backend URL
+    this.baseURL = "http://localhost:3000/api"; // Change this to your backend URL
     this.defaultHeaders = {
       "Content-Type": "application/json",
     };
@@ -410,6 +410,287 @@ class MockDataService {
   async getUnits() {
     await this.delay();
     return { data: this.units };
+  }
+
+  // Mock inventory methods
+  async getInventory(params = {}) {
+    await this.delay();
+
+    // Create inventory data from products
+    let inventoryData = this.products.map((product) => ({
+      id: product.id,
+      product_id: product.id,
+      name: product.name,
+      category: product.category,
+      quantity: product.stock_quantity,
+      unit_name: product.unit_name,
+      branch_id: 1,
+      created_at: product.created_at,
+      updated_at: product.updated_at,
+    }));
+
+    // Apply search filter
+    if (params.search) {
+      const searchTerm = params.search.toLowerCase();
+      inventoryData = inventoryData.filter((item) =>
+        item.name.toLowerCase().includes(searchTerm),
+      );
+    }
+
+    // Apply stock status filter
+    if (params.stock_status) {
+      inventoryData = inventoryData.filter((item) => {
+        switch (params.stock_status) {
+          case "in_stock":
+            return item.quantity > 5;
+          case "low_stock":
+            return item.quantity > 0 && item.quantity <= 5;
+          case "out_of_stock":
+            return item.quantity === 0;
+          default:
+            return true;
+        }
+      });
+    }
+
+    // Apply category filter
+    if (params.category) {
+      inventoryData = inventoryData.filter(
+        (item) => item.category === params.category,
+      );
+    }
+
+    // Apply sorting
+    if (params.sort) {
+      switch (params.sort) {
+        case "name":
+          inventoryData.sort((a, b) => a.name.localeCompare(b.name));
+          break;
+        case "stock_asc":
+          inventoryData.sort((a, b) => a.quantity - b.quantity);
+          break;
+        case "stock_desc":
+          inventoryData.sort((a, b) => b.quantity - a.quantity);
+          break;
+        case "updated_desc":
+          inventoryData.sort(
+            (a, b) => new Date(b.updated_at) - new Date(a.updated_at),
+          );
+          break;
+      }
+    }
+
+    // Apply pagination
+    const page = parseInt(params.page) || 1;
+    const limit = parseInt(params.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const paginatedData = inventoryData.slice(offset, offset + limit);
+
+    return {
+      data: paginatedData,
+      pagination: {
+        page,
+        limit,
+        total: inventoryData.length,
+        totalPages: Math.ceil(inventoryData.length / limit),
+      },
+    };
+  }
+
+  async getLowStockItems(threshold = 5) {
+    await this.delay();
+    const lowStockItems = this.products.filter(
+      (product) =>
+        product.stock_quantity > 0 && product.stock_quantity <= threshold,
+    );
+    return { data: lowStockItems };
+  }
+
+  async getStockMovements(params = {}) {
+    await this.delay();
+
+    // Generate mock stock movements
+    const movements = [
+      {
+        id: 1,
+        product_id: 1,
+        product_name: "Margherita Pizza",
+        type: "in",
+        quantity: 20,
+        previous_quantity: 5,
+        new_quantity: 25,
+        reference: "Purchase Order #001",
+        created_at: "2024-01-25T10:30:00Z",
+      },
+      {
+        id: 2,
+        product_id: 2,
+        product_name: "Coca Cola",
+        type: "out",
+        quantity: 10,
+        previous_quantity: 160,
+        new_quantity: 150,
+        reference: "Sale #456",
+        created_at: "2024-01-25T14:15:00Z",
+      },
+      {
+        id: 3,
+        product_id: 3,
+        product_name: "Chocolate Cake",
+        type: "adjustment",
+        quantity: 2,
+        previous_quantity: 10,
+        new_quantity: 8,
+        reference: "Inventory count adjustment",
+        created_at: "2024-01-25T16:45:00Z",
+      },
+      {
+        id: 4,
+        product_id: 4,
+        product_name: "Caesar Salad",
+        type: "out",
+        quantity: 3,
+        previous_quantity: 5,
+        new_quantity: 2,
+        reference: "Sale #789",
+        created_at: "2024-01-25T18:20:00Z",
+      },
+      {
+        id: 5,
+        product_id: 5,
+        product_name: "Orange Juice",
+        type: "out",
+        quantity: 5,
+        previous_quantity: 5,
+        new_quantity: 0,
+        reference: "Sale #101",
+        created_at: "2024-01-25T19:30:00Z",
+      },
+      {
+        id: 6,
+        product_id: 1,
+        product_name: "Margherita Pizza",
+        type: "in",
+        quantity: 15,
+        previous_quantity: 25,
+        new_quantity: 40,
+        reference: "Restock delivery",
+        created_at: "2024-01-26T09:00:00Z",
+      },
+    ];
+
+    let filteredMovements = [...movements];
+
+    // Apply search filter
+    if (params.search) {
+      const searchTerm = params.search.toLowerCase();
+      filteredMovements = filteredMovements.filter(
+        (movement) =>
+          movement.product_name.toLowerCase().includes(searchTerm) ||
+          movement.reference.toLowerCase().includes(searchTerm),
+      );
+    }
+
+    // Apply type filter
+    if (params.type) {
+      filteredMovements = filteredMovements.filter(
+        (movement) => movement.type === params.type,
+      );
+    }
+
+    // Apply date filters
+    if (params.date_from) {
+      const fromDate = new Date(params.date_from);
+      filteredMovements = filteredMovements.filter(
+        (movement) => new Date(movement.created_at) >= fromDate,
+      );
+    }
+
+    if (params.date_to) {
+      const toDate = new Date(params.date_to);
+      toDate.setHours(23, 59, 59, 999); // End of day
+      filteredMovements = filteredMovements.filter(
+        (movement) => new Date(movement.created_at) <= toDate,
+      );
+    }
+
+    // Apply product filter
+    if (params.product_id) {
+      filteredMovements = filteredMovements.filter(
+        (movement) => movement.product_id === parseInt(params.product_id),
+      );
+    }
+
+    // Sort by date (newest first)
+    filteredMovements.sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at),
+    );
+
+    // Apply pagination
+    const page = parseInt(params.page) || 1;
+    const limit = parseInt(params.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const paginatedMovements = filteredMovements.slice(offset, offset + limit);
+
+    return {
+      data: paginatedMovements,
+      pagination: {
+        page,
+        limit,
+        total: filteredMovements.length,
+        totalPages: Math.ceil(filteredMovements.length / limit),
+      },
+    };
+  }
+
+  async addStockMovement(movementData) {
+    await this.delay();
+
+    // Find the product
+    const productIndex = this.products.findIndex(
+      (p) => p.id === movementData.product_id,
+    );
+    if (productIndex === -1) {
+      throw new Error("Product not found");
+    }
+
+    const product = this.products[productIndex];
+    const previousQuantity = product.stock_quantity;
+    let newQuantity = previousQuantity;
+
+    // Calculate new quantity based on movement type
+    switch (movementData.type) {
+      case "in":
+        newQuantity = previousQuantity + movementData.quantity;
+        break;
+      case "out":
+        newQuantity = Math.max(0, previousQuantity - movementData.quantity);
+        break;
+      case "adjustment":
+        newQuantity = movementData.quantity;
+        break;
+    }
+
+    // Update product stock
+    this.products[productIndex].stock_quantity = newQuantity;
+    this.products[productIndex].updated_at = new Date().toISOString();
+
+    // Create movement record
+    const movement = {
+      id: Date.now(), // Simple ID generation
+      product_id: movementData.product_id,
+      product_name: product.name,
+      type: movementData.type,
+      quantity: movementData.quantity,
+      previous_quantity: previousQuantity,
+      new_quantity: newQuantity,
+      reference: movementData.reference || "",
+      created_at: new Date().toISOString(),
+    };
+
+    return { data: movement };
   }
 }
 

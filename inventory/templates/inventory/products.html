@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>POS System - Product Management</title>
+    <link rel="stylesheet" href="{% static 'inventory/css/main.css' %}" />
+    <link rel="stylesheet" href="{% static 'inventory/css/product-management.css' %}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>
+                    <i class="fas fa-cash-register"></i> POS System
+                </h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active">
+                    <a href="#" data-section="products">
+                        <i class="fas fa-box"></i> Product Management
+                    </a>
+                </li>
+                <li class="disabled">
+                    <a href="#" data-section="inventory">
+                        <i class="fas fa-warehouse"></i> Inventory
+                    </a>
+                </li>
+                <li class="disabled">
+                    <a href="#" data-section="sales">
+                        <i class="fas fa-shopping-cart"></i> Sales
+                    </a>
+                </li>
+                <li class="disabled">
+                    <a href="#" data-section="reports">
+                        <i class="fas fa-chart-bar"></i> Reports
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1>Product Management</h1>
+                <button class="btn btn-primary" id="addProductBtn">
+                    <i class="fas fa-plus"></i> Add Product
+                </button>
+            </header>
+            <!-- Search and Filter Bar -->
+            <div class="search-filter-bar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search products..." />
+                </div>
+                <div class="filter-group">
+                    <select id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="food">Food</option>
+                        <option value="beverage">Beverage</option>
+                        <option value="dessert">Dessert</option>
+                    </select>
+                    <select id="unitFilter">
+                        <option value="">All Units</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Products Table -->
+            <div class="table-container">
+                <table class="products-table" id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Barcode</th>
+                            <th>Category</th>
+                            <th>Unit</th>
+                            <th>Description</th>
+                            <th>Stock</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <!-- Products will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <!-- Pagination will be generated here -->
+            </div>
+        </main>
+    </div>
+    <!-- Product Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add Product</h3>
+                <span class="close" id="closeModal">&times;</span>
+            </div>
+            <form id="productForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="productName">Product Name *</label>
+                        <input type="text" id="productName" name="name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="productBarcode">Barcode</label>
+                        <input type="text" id="productBarcode" name="barcode" />
+                    </div>
+                    <div class="form-group">
+                        <label for="productCategory">Category *</label>
+                        <input type="text" id="productCategory" name="category" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="productUnit">Unit *</label>
+                        <select id="productUnit" name="unit_id" required>
+                            <option value="">Select Unit</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="productDescription">Description</label>
+                        <textarea id="productDescription" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="{% static 'inventory/js/utils.js' %}"></script>
+    <script src="{% static 'inventory/js/api.js' %}"></script>
+    <script src="{% static 'inventory/js/product-management.js' %}"></script>
+</body>
+
+</html>

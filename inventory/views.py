@@ -7,6 +7,10 @@ from .forms import ProductFormModel
 
 # Create your views here.
 class ProductsListView(TemplateView):
+    template_name = "inventory/products.html"
+
+
+class InventoryTemplateView(TemplateView):
     template_name = "inventory/index.html"
 
 
